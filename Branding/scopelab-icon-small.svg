@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>ScopeLab</title>
+  <rect width="64" height="64" rx="14" fill="#0b1114"/>
+  <path d="M10 41H20V23H32V41H44V23H54" fill="none" stroke="#72ff9c" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

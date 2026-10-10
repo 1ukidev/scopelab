@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "ScopeLab.sln",
+    "projects": [
+      "ScopeLab.Desktop\\ScopeLab.Desktop.csproj",
+      "ScopeLab\\ScopeLab.csproj",
+      "ScopeLab.Tests\\ScopeLab.Tests.csproj",
+      "ScopeLab.Resources\\ScopeLab.Resources.csproj"
+    ]
+  }
+}

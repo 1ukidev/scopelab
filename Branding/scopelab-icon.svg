@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>ScopeLab</title>
+  <defs>
+    <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a313c"/>
+      <stop offset="1" stop-color="#12161c"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1a1d"/>
+      <stop offset="1" stop-color="#050b0d"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <clipPath id="screen-clip">
+      <rect x="64" y="64" width="384" height="384" rx="56"/>
+    </clipPath>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bezel)"/>
+  <rect x="2" y="2" width="508" height="508" rx="110" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="4"/>
+
+  <rect x="64" y="64" width="384" height="384" rx="56" fill="url(#screen)"/>
+
+  <g clip-path="url(#screen-clip)">
+    <g stroke="#7fa6b0" stroke-opacity="0.13" stroke-width="2">
+      <path d="M160 64V448M352 64V448M64 160H448M64 352H448"/>
+    </g>
+    <g stroke="#7fa6b0" stroke-opacity="0.32" stroke-width="2">
+      <path d="M256 64V448M64 256H448"/>
+      <path d="M102 248V264M141 248V264M179 248V264M218 248V264M294 248V264M333 248V264M371 248V264M410 248V264"/>
+      <path d="M248 102H264M248 141H264M248 179H264M248 218H264M248 294H264M248 333H264M248 371H264M248 410H264"/>
+    </g>
+
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M108 324H176V188H256V324H336V188H404" stroke="#72ff9c" stroke-width="34" stroke-opacity="0.55" filter="url(#glow)"/>
+      <path d="M108 324H176V188H256V324H336V188H404" stroke="#72ff9c" stroke-width="22"/>
+      <path d="M108 324H176V188H256V324H336V188H404" stroke="#e9fff0" stroke-width="7" stroke-opacity="0.85" filter="url(#soft)"/>
+    </g>
+
+    <circle cx="404" cy="188" r="26" fill="#72ff9c" opacity="0.6" filter="url(#glow)"/>
+    <circle cx="404" cy="188" r="11" fill="#f2fff6"/>
+
+    <rect x="64" y="64" width="384" height="384" fill="url(#glass)"/>
+  </g>
+
+  <rect x="64" y="64" width="384" height="384" rx="56" fill="none" stroke="#000000" stroke-opacity="0.45" stroke-width="4"/>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320">
+  <title>ScopeLab</title>
+  <defs>
+    <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a313c"/>
+      <stop offset="1" stop-color="#12161c"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1a1d"/>
+      <stop offset="1" stop-color="#050b0d"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <clipPath id="screen-clip">
+      <rect x="40" y="40" width="240" height="240" rx="36"/>
+    </clipPath>
+  </defs>
+
+  <g transform="translate(0 0)">
+    <rect width="320" height="320" rx="70" fill="url(#bezel)"/>
+    <rect x="40" y="40" width="240" height="240" rx="36" fill="url(#screen)"/>
+    <g clip-path="url(#screen-clip)">
+      <path d="M100 40V280M220 40V280M40 100H280M40 220H280" stroke="#7fa6b0" stroke-opacity="0.13" stroke-width="1.5"/>
+      <path d="M160 40V280M40 160H280" stroke="#7fa6b0" stroke-opacity="0.32" stroke-width="1.5"/>
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M67 203H110V117H160V203H210V117H253" stroke="#72ff9c" stroke-width="22" stroke-opacity="0.55" filter="url(#glow)"/>
+        <path d="M67 203H110V117H160V203H210V117H253" stroke="#72ff9c" stroke-width="14"/>
+        <path d="M67 203H110V117H160V203H210V117H253" stroke="#e9fff0" stroke-width="4.5" stroke-opacity="0.8"/>
+      </g>
+      <circle cx="253" cy="117" r="17" fill="#72ff9c" opacity="0.6" filter="url(#glow)"/>
+      <circle cx="253" cy="117" r="7" fill="#f2fff6"/>
+    </g>
+  </g>
+
+  <text x="372" y="207" font-family="Roboto, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="150" font-weight="700" letter-spacing="-3">
+    <tspan fill="#e8ebf1">Scope</tspan><tspan fill="#72ff9c">Lab</tspan>
+  </text>
+</svg>

@@ -1,6 +1,8 @@
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Localisation;
 
 namespace ScopeLab.Graphics.Containers;
 
@@ -9,7 +11,7 @@ namespace ScopeLab.Graphics.Containers;
 /// </summary>
 public partial class LabelledRow : CompositeDrawable
 {
-    public LabelledRow(string label, Drawable control, float labelWidth = 52)
+    public LabelledRow(LocalisableString label, Drawable control, float labelWidth = 52)
     {
         RelativeSizeAxes = Axes.X;
         Height = control.Height;
@@ -23,7 +25,7 @@ public partial class LabelledRow : CompositeDrawable
             {
                 Anchor = Anchor.CentreLeft,
                 Origin = Anchor.CentreLeft,
-                Text = label.ToUpperInvariant(),
+                Text = label.ToUpper(),
                 Font = ScopeFont.Condensed(11, true),
                 Colour = ScopeColours.TEXT_FAINT,
             },

@@ -1,6 +1,8 @@
 using System;
+using System.Globalization;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -33,14 +35,14 @@ public partial class Knob : CompositeDrawable, IHasTooltip
         set => current.Current = value;
     }
 
-    public Func<double, string> Format { get; init; } = v => v.ToString("0.###");
+    public Func<double, LocalisableString> Format { get; init; } = v => v.ToString("0.###", CultureInfo.InvariantCulture);
 
     public LocalisableString TooltipText { get; init; }
 
     public Colour4 Accent { get; init; } = ScopeColours.TEXT;
 
     private readonly KnobScale scale;
-    private readonly string label;
+    private readonly LocalisableString label;
     private readonly float knobSize;
 
     private Container knob = null!;
@@ -54,7 +56,7 @@ public partial class Knob : CompositeDrawable, IHasTooltip
     private double scrollRemainder;
     private float targetAngle;
 
-    public Knob(string label, KnobScale scale, float size = 46)
+    public Knob(LocalisableString label, KnobScale scale, float size = 46)
     {
         this.label = label;
         this.scale = scale;
@@ -72,7 +74,7 @@ public partial class Knob : CompositeDrawable, IHasTooltip
             {
                 Anchor = Anchor.TopCentre,
                 Origin = Anchor.TopCentre,
-                Text = label.ToUpperInvariant(),
+                Text = label.ToUpper(),
                 Font = ScopeFont.Condensed(12, true),
                 Colour = ScopeColours.TEXT_DIM,
             },
@@ -317,6 +319,9 @@ public partial class Knob : CompositeDrawable, IHasTooltip
         applyDetents(e.ScrollDelta.Y * (e.ShiftPressed && !scale.Discrete ? fine_adjustment : 1), ref scrollRemainder);
         return true;
     }
+
+    // The framework only delivers double-clicks to whoever handled the first click.
+    protected override bool OnClick(ClickEvent e) => true;
 
     protected override bool OnDoubleClick(DoubleClickEvent e)
     {

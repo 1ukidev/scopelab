@@ -1,7 +1,9 @@
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Localisation;
 using osuTK;
 
 namespace ScopeLab.Graphics.Containers;
@@ -17,7 +19,7 @@ public partial class PanelSection : Container
 
     protected override Container<Drawable> Content => content;
 
-    public PanelSection(string title, Colour4? accent = null)
+    public PanelSection(LocalisableString title, Colour4? accent = null)
     {
         RelativeSizeAxes = Axes.X;
         AutoSizeAxes = Axes.Y;
@@ -42,7 +44,7 @@ public partial class PanelSection : Container
                     {
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft,
-                        Text = title.ToUpperInvariant(),
+                        Text = title.ToUpper(),
                         Font = ScopeFont.Condensed(13, true),
                         Colour = ScopeColours.TEXT_DIM,
                         Spacing = new Vector2(1.5f, 0),

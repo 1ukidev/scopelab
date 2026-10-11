@@ -9,6 +9,7 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Framework.Utils;
 using osuTK;
+using ScopeLab.Localisation;
 using ScopeLab.Simulation;
 using ScopeLab.Utils;
 
@@ -77,7 +78,7 @@ public partial class ScopeDisplay : CompositeDrawable
                 Anchor = Anchor.TopRight,
                 Origin = Anchor.CentreRight,
                 Guide = guide,
-                TooltipText = $"{channel.Name} ground level. Drag to move the trace, double-click to reset.",
+                TooltipText = DisplayStrings.ChannelMarkerTooltip(channel.Name),
             });
         }
 
@@ -89,7 +90,7 @@ public partial class ScopeDisplay : CompositeDrawable
         {
             Origin = Anchor.CentreLeft,
             Guide = levelGuide,
-            TooltipText = "Trigger level. Drag to set the threshold the signal must cross.",
+            TooltipText = DisplayStrings.TriggerLevelTooltip,
         });
 
         positionRail.Add(new TriggerPositionMarker
@@ -97,7 +98,7 @@ public partial class ScopeDisplay : CompositeDrawable
             Anchor = Anchor.BottomLeft,
             Origin = Anchor.BottomCentre,
             Guide = positionGuide,
-            TooltipText = "Trigger point. Drag to shift the waveform horizontally.",
+            TooltipText = DisplayStrings.TriggerPositionTooltip,
         });
 
         InternalChildren =

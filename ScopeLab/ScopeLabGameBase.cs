@@ -1,8 +1,10 @@
+using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.IO.Stores;
 using osuTK;
+using ScopeLab.Localisation;
 using ScopeLab.Resources;
 
 namespace ScopeLab;
@@ -28,5 +30,9 @@ public partial class ScopeLabGameBase : osu.Framework.Game
     private void load()
     {
         Resources.AddStore(new DllResourceStore(typeof(ScopeLabResources).Assembly));
+
+        // The first language registered is the fallback when the system language isn't available.
+        foreach (var language in Enum.GetValues<Language>())
+            Localisation.AddLanguage(language.ToLocale(), new ScopeLocalisationStore(language));
     }
 }

@@ -1,11 +1,14 @@
 using System;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Localisation;
 using osuTK;
 using ScopeLab.Graphics.Containers;
+using ScopeLab.Localisation;
 using ScopeLab.Simulation;
 using ScopeLab.Utils;
 
@@ -47,7 +50,7 @@ public partial class MeasurementPanel : CompositeDrawable
 
         flow.Add(createCounter());
 
-        InternalChild = new PanelSection("Measure") { Child = flow };
+        InternalChild = new PanelSection(DisplayStrings.Measure) { Child = flow };
     }
 
     private Drawable createCounter() => new Container
@@ -76,7 +79,7 @@ public partial class MeasurementPanel : CompositeDrawable
                         [
                             new SpriteText
                             {
-                                Text = "COUNTER",
+                                Text = DisplayStrings.Counter.ToUpper(),
                                 Font = ScopeFont.Condensed(11, true),
                                 Colour = ScopeColours.TEXT_FAINT,
                             },
@@ -121,14 +124,14 @@ public partial class MeasurementPanel : CompositeDrawable
     {
         public readonly ScopeChannel Channel;
 
-        private readonly Readout frequency = new Readout("Freq");
-        private readonly Readout period = new Readout("Period");
+        private readonly Readout frequency = new Readout(DisplayStrings.Frequency);
+        private readonly Readout period = new Readout(DisplayStrings.Period);
         private readonly Readout peakToPeak = new Readout("Vpp");
         private readonly Readout rms = new Readout("Vrms");
-        private readonly Readout mean = new Readout("Mean");
-        private readonly Readout duty = new Readout("Duty");
-        private readonly Readout maximum = new Readout("Max");
-        private readonly Readout minimum = new Readout("Min");
+        private readonly Readout mean = new Readout(DisplayStrings.Mean);
+        private readonly Readout duty = new Readout(DisplayStrings.DutyCycle);
+        private readonly Readout maximum = new Readout(DisplayStrings.Maximum);
+        private readonly Readout minimum = new Readout(DisplayStrings.Minimum);
 
         private SpriteText couplingText = null!;
         private WaveformStatistics smoothed = WaveformStatistics.EMPTY;
@@ -227,7 +230,7 @@ public partial class MeasurementPanel : CompositeDrawable
             peakToPeak.Value = SiFormat.Format(s.PeakToPeak, "V");
             rms.Value = SiFormat.Format(s.Rms, "V");
             mean.Value = SiFormat.Format(s.Mean, "V");
-            duty.Value = double.IsNaN(s.DutyCycle) ? "--- %" : $"{s.DutyCycle * 100:0.0} %";
+            duty.Value = double.IsNaN(s.DutyCycle) ? "--- %" : FormattableString.Invariant($"{s.DutyCycle * 100:0.0} %");
             maximum.Value = SiFormat.Format(s.Max, "V");
             minimum.Value = SiFormat.Format(s.Min, "V");
         }
@@ -251,7 +254,7 @@ public partial class MeasurementPanel : CompositeDrawable
     {
         private readonly SpriteText valueText;
 
-        public Readout(string label)
+        public Readout(LocalisableString label)
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
@@ -265,7 +268,7 @@ public partial class MeasurementPanel : CompositeDrawable
                 [
                     new SpriteText
                     {
-                        Text = label.ToUpperInvariant(),
+                        Text = label.ToUpper(),
                         Font = ScopeFont.Condensed(10, true),
                         Colour = ScopeColours.TEXT_FAINT,
                     },

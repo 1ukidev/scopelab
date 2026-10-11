@@ -15,6 +15,7 @@ using ScopeLab.Graphics.Controls;
 using ScopeLab.Graphics.Display;
 using ScopeLab.Graphics.Overlays;
 using ScopeLab.Graphics.Panels;
+using ScopeLab.Localisation;
 using ScopeLab.Simulation;
 
 namespace ScopeLab;
@@ -136,7 +137,7 @@ public partial class MainScreen : Screen
                 Size = new Vector2(28),
                 FontSize = 16,
                 Action = () => about.Show(),
-                TooltipText = "About ScopeLab (F1)",
+                TooltipText = AboutStrings.OpenTooltip,
             },
         ],
     };

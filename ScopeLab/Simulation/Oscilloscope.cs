@@ -213,7 +213,7 @@ public partial class Oscilloscope : Component
         if (sweeping)
             continueSweep();
 
-        if (!sweeping)
+        if (!sweeping && Running.Value)
             startSweep();
     }
 

@@ -6,6 +6,7 @@ using osu.Framework.Graphics.Sprites;
 using osuTK;
 using ScopeLab.Graphics.Containers;
 using ScopeLab.Graphics.Controls;
+using ScopeLab.Localisation;
 using ScopeLab.Simulation;
 using ScopeLab.Utils;
 
@@ -24,20 +25,50 @@ public partial class ScopeControlPanel : CompositeDrawable
     [BackgroundDependencyLoader]
     private void load()
     {
-        InternalChild = new FillFlowContainer
-        {
-            RelativeSizeAxes = Axes.Both,
-            Direction = FillDirection.Vertical,
-            Spacing = new Vector2(0, 14),
-            Children =
-            [
-                createRunControls(),
-                createHorizontalSection(),
-                createVerticalSection(),
-                createTriggerSection(),
-                createDisplaySection(),
-            ],
-        };
+        InternalChildren =
+        [
+            new FillFlowContainer
+            {
+                RelativeSizeAxes = Axes.Both,
+                Direction = FillDirection.Vertical,
+                Spacing = new Vector2(0, 14),
+                Children =
+                [
+                    createRunControls(),
+                    createHorizontalSection(),
+                    createVerticalSection(),
+                    createTriggerSection(),
+                    createDisplaySection(),
+                ],
+            },
+            new FillFlowContainer
+            {
+                Anchor = Anchor.BottomRight,
+                Origin = Anchor.BottomRight,
+                AutoSizeAxes = Axes.Both,
+                Direction = FillDirection.Horizontal,
+                Spacing = new Vector2(8, 0),
+                Children =
+                [
+                    new SpriteIcon
+                    {
+                        Anchor = Anchor.CentreLeft,
+                        Origin = Anchor.CentreLeft,
+                        Icon = FontAwesome.Solid.Globe,
+                        Size = new Vector2(14),
+                        Colour = ScopeColours.TEXT_FAINT,
+                    },
+                    new LanguageSelector
+                    {
+                        Anchor = Anchor.CentreLeft,
+                        Origin = Anchor.CentreLeft,
+                        Width = 84,
+                        Height = 24,
+                        Accent = ScopeColours.TEXT,
+                    },
+                ],
+            },
+        ];
     }
 
     private Drawable createRunControls() => new GridContainer
@@ -55,47 +86,47 @@ public partial class ScopeControlPanel : CompositeDrawable
         {
             new Drawable[]
             {
-                new ScopeButton("RUN / STOP")
+                new ScopeButton(ControlStrings.RunStop)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Accent = ScopeColours.RUN,
                     Lit = scope.Running,
                     Action = () => scope.Running.Toggle(),
-                    TooltipText = "Start or freeze the acquisition (Space)",
+                    TooltipText = ControlStrings.RunStopTooltip,
                     FontSize = 14,
                 },
                 Empty(),
-                new ScopeButton("SINGLE")
+                new ScopeButton(ControlStrings.Single)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Accent = ScopeColours.TRIGGER,
                     Lit = scope.SingleArmed,
                     Action = scope.Single,
-                    TooltipText = "Capture one sweep on the next trigger, then stop (S)",
+                    TooltipText = ControlStrings.SingleTooltip,
                     FontSize = 14,
                 },
                 Empty(),
-                new ScopeButton("AUTO SET", FontAwesome.Solid.Magic)
+                new ScopeButton(ControlStrings.AutoSet, FontAwesome.Solid.Magic)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Accent = ScopeColours.GENERATOR,
                     Action = scope.AutoSet,
-                    TooltipText = "Analyse the inputs and pick sensible settings (A)",
+                    TooltipText = ControlStrings.AutoSetTooltip,
                     FontSize = 14,
                 },
                 Empty(),
-                new ScopeButton("DEFAULT", FontAwesome.Solid.Undo)
+                new ScopeButton(ControlStrings.Default, FontAwesome.Solid.Undo)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Action = scope.ResetToDefaults,
-                    TooltipText = "Restore the factory setup of the scope and the generator (D)",
+                    TooltipText = ControlStrings.DefaultTooltip,
                     FontSize = 14,
                 },
             },
         },
     };
 
-    private Drawable createHorizontalSection() => new PanelSection("Horizontal")
+    private Drawable createHorizontalSection() => new PanelSection(ControlStrings.Horizontal)
     {
         Child = new FillFlowContainer
         {
@@ -104,17 +135,17 @@ public partial class ScopeControlPanel : CompositeDrawable
             Spacing = new Vector2(column_spacing, 0),
             Children =
             [
-                new Knob("Time/div", new SteppedScale(Timebase.SECONDS_PER_DIVISION), 54)
+                new Knob(ControlStrings.TimePerDivision, new SteppedScale(Timebase.SECONDS_PER_DIVISION), 54)
                 {
                     Current = scope.Timebase.SecondsPerDivision,
                     Format = v => SiFormat.Format(v, "s"),
-                    TooltipText = "Horizontal scale: time per grid division. You can also scroll over the screen.",
+                    TooltipText = ControlStrings.TimePerDivisionTooltip,
                 },
-                new Knob("Position", new EncoderScale(() => 0.05), 40)
+                new Knob(ControlStrings.Position, new EncoderScale(() => 0.05), 40)
                 {
                     Current = scope.Timebase.Position,
                     Format = v => SiFormat.Format(v * scope.Timebase.SecondsPerDivision.Value, "s", signed: true),
-                    TooltipText = "Moves the trigger point horizontally. You can also drag the screen. Double-click to centre.",
+                    TooltipText = ControlStrings.HorizontalPositionTooltip,
                 },
                 new TextFlowContainer(t =>
                 {
@@ -126,13 +157,13 @@ public partial class ScopeControlPanel : CompositeDrawable
                     Origin = Anchor.CentreLeft,
                     Width = 200,
                     AutoSizeAxes = Axes.Y,
-                    Text = "Scroll over the screen to zoom in time, drag it to pan. Slow timebases switch to roll mode.",
+                    Text = ControlStrings.HorizontalHint,
                 },
             ],
         },
     };
 
-    private Drawable createVerticalSection() => new PanelSection("Vertical")
+    private Drawable createVerticalSection() => new PanelSection(ControlStrings.Vertical)
     {
         Child = new GridContainer
         {
@@ -163,7 +194,7 @@ public partial class ScopeControlPanel : CompositeDrawable
                     Accent = colour,
                     Lit = channel.Enabled,
                     Action = () => channel.Enabled.Toggle(),
-                    TooltipText = $"Show or hide {channel.Name} ({channel.Index + 1})",
+                    TooltipText = ControlStrings.ChannelTooltip(channel.Name, channel.Index + 1),
                 },
                 new FillFlowContainer
                 {
@@ -174,19 +205,19 @@ public partial class ScopeControlPanel : CompositeDrawable
                     Spacing = new Vector2(column_spacing, 0),
                     Children =
                     [
-                        new Knob("Volts/div", new SteppedScale(ScopeChannel.VOLTS_PER_DIVISION), 48)
+                        new Knob(ControlStrings.VoltsPerDivision, new SteppedScale(ScopeChannel.VOLTS_PER_DIVISION), 48)
                         {
                             Current = channel.VoltsPerDivision,
                             Accent = colour,
                             Format = v => SiFormat.Format(v, "V"),
-                            TooltipText = $"Vertical scale of {channel.Name}: volts per grid division.",
+                            TooltipText = ControlStrings.VoltsPerDivisionTooltip(channel.Name),
                         },
-                        new Knob("Position", new EncoderScale(() => 0.05), 40)
+                        new Knob(ControlStrings.Position, new EncoderScale(() => 0.05), 40)
                         {
                             Current = channel.Position,
                             Accent = colour,
-                            Format = v => $"{v:+0.00;-0.00;0.00} div",
-                            TooltipText = $"Moves {channel.Name} up or down. You can also drag its marker. Double-click to reset.",
+                            Format = v => FormattableString.Invariant($"{v:+0.00;-0.00;0.00} div"),
+                            TooltipText = ControlStrings.ChannelPositionTooltip(channel.Name),
                         },
                     ],
                 },
@@ -195,13 +226,13 @@ public partial class ScopeControlPanel : CompositeDrawable
                     RelativeSizeAxes = Axes.X,
                     Current = channel.Coupling,
                     Accent = colour,
-                    TooltipText = "DC passes everything, AC blocks the DC offset, GND shows the zero reference.",
+                    TooltipText = ControlStrings.CouplingTooltip,
                 },
             ],
         };
     }
 
-    private Drawable createTriggerSection() => new PanelSection("Trigger", ScopeColours.TRIGGER)
+    private Drawable createTriggerSection() => new PanelSection(ControlStrings.Trigger, ScopeColours.TRIGGER)
     {
         Child = new GridContainer
         {
@@ -220,12 +251,12 @@ public partial class ScopeControlPanel : CompositeDrawable
                         Spacing = new Vector2(0, 4),
                         Children =
                         [
-                            new Knob("Level", new EncoderScale(() => scope.TriggerChannel.VoltsPerDivision.Value / 25), 44)
+                            new Knob(ControlStrings.Level, new EncoderScale(() => scope.TriggerChannel.VoltsPerDivision.Value / 25), 44)
                             {
                                 Current = scope.Trigger.Level,
                                 Accent = ScopeColours.TRIGGER,
                                 Format = v => SiFormat.Format(v, "V"),
-                                TooltipText = "The voltage the signal must cross to start a sweep. You can also drag the T marker.",
+                                TooltipText = ControlStrings.LevelTooltip,
                             },
                             new ScopeButton("50%")
                             {
@@ -235,7 +266,7 @@ public partial class ScopeControlPanel : CompositeDrawable
                                 FontSize = 12,
                                 Accent = ScopeColours.TRIGGER,
                                 Action = scope.CentreTriggerLevel,
-                                TooltipText = "Sets the level halfway between the signal's peaks",
+                                TooltipText = ControlStrings.CentreLevelTooltip,
                             },
                         ],
                     },
@@ -248,25 +279,25 @@ public partial class ScopeControlPanel : CompositeDrawable
                         Spacing = new Vector2(0, 8),
                         Children =
                         [
-                            new LabelledRow("Source", new OptionSelector<int>([0, 1])
+                            new LabelledRow(ControlStrings.Source, new OptionSelector<int>([0, 1])
                             {
                                 Current = scope.Trigger.Source,
                                 Accent = ScopeColours.TRIGGER,
                                 LabelFor = i => scope.Channels[i].Name,
-                                TooltipText = "Which channel the trigger watches",
+                                TooltipText = ControlStrings.SourceTooltip,
                             }),
-                            new LabelledRow("Slope", new SlopeSelector
+                            new LabelledRow(ControlStrings.Slope, new SlopeSelector
                             {
                                 Current = scope.Trigger.Slope,
                                 Accent = ScopeColours.TRIGGER,
-                                TooltipText = "Trigger on rising or falling edges",
+                                TooltipText = ControlStrings.SlopeTooltip,
                             }),
-                            new LabelledRow("Mode", new OptionSelector<TriggerMode>(Enum.GetValues<TriggerMode>())
+                            new LabelledRow(ControlStrings.Mode, new OptionSelector<TriggerMode>(Enum.GetValues<TriggerMode>())
                             {
                                 Current = scope.Trigger.Mode,
                                 Accent = ScopeColours.TRIGGER,
                                 LabelFor = m => m.ToString().ToUpperInvariant(),
-                                TooltipText = "AUTO sweeps even without a trigger, NORMAL waits for one",
+                                TooltipText = ControlStrings.ModeTooltip,
                             }),
                         ],
                     },
@@ -275,7 +306,7 @@ public partial class ScopeControlPanel : CompositeDrawable
         },
     };
 
-    private Drawable createDisplaySection() => new PanelSection("Display")
+    private Drawable createDisplaySection() => new PanelSection(ControlStrings.Display)
     {
         Child = new FillFlowContainer
         {
@@ -294,14 +325,14 @@ public partial class ScopeControlPanel : CompositeDrawable
                     {
                         new Drawable[]
                         {
-                            new LabelledRow("Format", new OptionSelector<DisplayMode>(Enum.GetValues<DisplayMode>())
+                            new LabelledRow(ControlStrings.Format, new OptionSelector<DisplayMode>(Enum.GetValues<DisplayMode>())
                             {
                                 Current = scope.DisplayMode,
                                 Accent = ScopeColours.XY,
-                                TooltipText = "YT plots voltage over time, XY plots CH1 against CH2 (X)",
+                                TooltipText = ControlStrings.FormatTooltip,
                             }),
                             Empty(),
-                            new LabelledRow("Math", new OptionSelector<MathMode>(Enum.GetValues<MathMode>())
+                            new LabelledRow(ControlStrings.Math, new OptionSelector<MathMode>(Enum.GetValues<MathMode>())
                             {
                                 Current = scope.MathFunction,
                                 Accent = ScopeColours.MATH,
@@ -310,9 +341,9 @@ public partial class ScopeControlPanel : CompositeDrawable
                                     MathMode.Add => "1+2",
                                     MathMode.Subtract => "1-2",
                                     MathMode.Multiply => "1×2",
-                                    _ => "OFF",
+                                    _ => ControlStrings.MathOff,
                                 },
-                                TooltipText = "Combines both channels into a third trace (M)",
+                                TooltipText = ControlStrings.MathTooltip,
                             }, 40),
                         },
                     },
@@ -324,24 +355,24 @@ public partial class ScopeControlPanel : CompositeDrawable
                     Spacing = new Vector2(column_spacing, 0),
                     Children =
                     [
-                        new Knob("Persistence", new SteppedScale(Oscilloscope.PERSISTENCE_STEPS), 40)
+                        new Knob(ControlStrings.Persistence, new SteppedScale(Oscilloscope.PERSISTENCE_STEPS), 40)
                         {
                             Current = scope.Persistence,
                             Accent = ScopeColours.XY,
                             Format = v => v switch
                             {
-                                0 => "MIN",
+                                0 => ControlStrings.PersistenceMinimum,
                                 double.PositiveInfinity => "∞",
                                 _ => SiFormat.Format(v, "s", 2),
                             },
-                            TooltipText = "How long the phosphor keeps glowing after the beam passes",
+                            TooltipText = ControlStrings.PersistenceTooltip,
                         },
-                        new Knob("Intensity", new LinearScale(0.1, 1, 0.02), 40)
+                        new Knob(ControlStrings.Intensity, new LinearScale(0.1, 1, 0.02), 40)
                         {
                             Current = scope.Intensity,
                             Accent = ScopeColours.XY,
-                            Format = v => $"{v * 100:0}%",
-                            TooltipText = "Beam brightness",
+                            Format = v => FormattableString.Invariant($"{v * 100:0}%"),
+                            TooltipText = ControlStrings.IntensityTooltip,
                         },
                         new TextFlowContainer(t =>
                         {
@@ -353,7 +384,7 @@ public partial class ScopeControlPanel : CompositeDrawable
                             Origin = Anchor.CentreLeft,
                             Width = 220,
                             AutoSizeAxes = Axes.Y,
-                            Text = "Shortcuts: Space run/stop, S single, A auto set, X toggle XY, M math, D default, 1/2 channels, F1 about.",
+                            Text = ControlStrings.Shortcuts,
                         },
                     ],
                 },

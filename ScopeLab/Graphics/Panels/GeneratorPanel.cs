@@ -5,6 +5,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
 using ScopeLab.Graphics.Controls;
+using ScopeLab.Localisation;
 using ScopeLab.Simulation;
 using ScopeLab.Utils;
 
@@ -42,7 +43,7 @@ public partial class GeneratorPanel : CompositeDrawable
                     {
                         Anchor = Anchor.BottomLeft,
                         Origin = Anchor.BottomLeft,
-                        Text = "FUNCTION GENERATOR  ·  20 MHz  ·  DUAL OUTPUT",
+                        Text = GeneratorStrings.Title,
                         Font = ScopeFont.Condensed(12, true),
                         Colour = ScopeColours.TEXT_FAINT,
                         Spacing = new Vector2(1, 0),
@@ -84,13 +85,13 @@ public partial class GeneratorPanel : CompositeDrawable
                     {
                         new Drawable[]
                         {
-                            new ScopeButton($"OUT {channel.Index + 1}")
+                            new ScopeButton(GeneratorStrings.Output(channel.Index + 1))
                             {
                                 RelativeSizeAxes = Axes.Both,
                                 Accent = colour,
                                 Lit = generator.Output,
                                 Action = () => generator.Output.Toggle(),
-                                TooltipText = $"Enables output {channel.Index + 1}, wired to {channel.Name} of the scope",
+                                TooltipText = GeneratorStrings.OutputTooltip(channel.Index + 1, channel.Name),
                             },
                             Empty(),
                             new WaveformSelector
@@ -98,7 +99,7 @@ public partial class GeneratorPanel : CompositeDrawable
                                 RelativeSizeAxes = Axes.X,
                                 Current = generator.Shape,
                                 Accent = colour,
-                                TooltipText = "Waveform",
+                                TooltipText = GeneratorStrings.WaveformTooltip,
                             },
                         },
                     },
@@ -110,40 +111,40 @@ public partial class GeneratorPanel : CompositeDrawable
                     Spacing = new Vector2(6, 0),
                     Children =
                     [
-                        new Knob("Freq", new LogScale(SignalGenerator.MIN_FREQUENCY, SignalGenerator.MAX_FREQUENCY, 24, 4), 42)
+                        new Knob(GeneratorStrings.Frequency, new LogScale(SignalGenerator.MIN_FREQUENCY, SignalGenerator.MAX_FREQUENCY, 24, 4), 42)
                         {
                             Current = generator.Frequency,
                             Accent = colour,
                             Format = v => SiFormat.Format(v, "Hz", 4),
-                            TooltipText = "Frequency. Hold Shift for fine tuning: try slightly detuned channels in XY mode!",
+                            TooltipText = GeneratorStrings.FrequencyTooltip,
                         },
-                        new Knob("Ampl", new LogScale(0.01, 20, 20), 38)
+                        new Knob(GeneratorStrings.Amplitude, new LogScale(0.01, 20, 20), 38)
                         {
                             Current = generator.Amplitude,
                             Accent = colour,
                             Format = v => SiFormat.Format(v, "Vpp"),
-                            TooltipText = "Peak-to-peak amplitude",
+                            TooltipText = GeneratorStrings.AmplitudeTooltip,
                         },
-                        new Knob("Offset", new LinearScale(-10, 10, 0.05), 38)
+                        new Knob(GeneratorStrings.Offset, new LinearScale(-10, 10, 0.05), 38)
                         {
                             Current = generator.Offset,
                             Accent = colour,
                             Format = v => SiFormat.Format(v, "V", signed: true),
-                            TooltipText = "DC offset added to the waveform",
+                            TooltipText = GeneratorStrings.OffsetTooltip,
                         },
-                        new Knob("Phase", new LinearScale(-180, 180, 1), 38)
+                        new Knob(GeneratorStrings.Phase, new LinearScale(-180, 180, 1), 38)
                         {
                             Current = generator.Phase,
                             Accent = colour,
-                            Format = v => $"{v:+0;-0;0}°",
-                            TooltipText = "Phase shift. Shapes the figures drawn in XY mode.",
+                            Format = v => FormattableString.Invariant($"{v:+0;-0;0}°"),
+                            TooltipText = GeneratorStrings.PhaseTooltip,
                         },
-                        new Knob("Noise", new LinearScale(0, 1, 0.005), 38)
+                        new Knob(GeneratorStrings.Noise, new LinearScale(0, 1, 0.005), 38)
                         {
                             Current = generator.NoiseLevel,
                             Accent = colour,
                             Format = v => SiFormat.Format(v, "V"),
-                            TooltipText = "Adds random noise (RMS)",
+                            TooltipText = GeneratorStrings.NoiseTooltip,
                         },
                     ],
                 },

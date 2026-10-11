@@ -1,13 +1,16 @@
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
+using osu.Framework.Localisation;
 using osuTK;
 using osuTK.Input;
 using ScopeLab.Graphics.Controls;
+using ScopeLab.Localisation;
 
 namespace ScopeLab.Graphics.Overlays;
 
@@ -17,6 +20,7 @@ namespace ScopeLab.Graphics.Overlays;
 public partial class AboutOverlay : OverlayContainer
 {
     private const float dialog_width = 540;
+    private const string repository_url = "https://github.com/1ukidev/scopelab";
 
     private Container dialog = null!;
 
@@ -65,20 +69,11 @@ public partial class AboutOverlay : OverlayContainer
                         Children =
                         [
                             createHeader(),
-                            createParagraph("ScopeLab is a bench oscilloscope simulator. A dual-channel digital oscilloscope is wired to a two-output "
-                                            + "function generator, so you can create signals and examine them just like on a real lab bench."),
-                            createParagraph("Pick waveforms, frequencies and amplitudes on the generator, then use the timebase, vertical and trigger "
-                                            + "controls to get a stable picture. Explore XY figures, math traces, persistence, automatic measurements "
-                                            + "and the frequency counter."),
-                            createParagraph("The screen imitates a phosphor display: the beam glows brighter where it moves slowly, fades on fast "
-                                            + "edges and leaves an afterglow behind."),
+                            createParagraph(AboutStrings.Introduction),
+                            createParagraph(AboutStrings.Controls),
+                            createParagraph(AboutStrings.Phosphor),
                             createTips(),
-                            new SpriteText
-                            {
-                                Text = "Built with osu!framework",
-                                Font = ScopeFont.Condensed(12, true),
-                                Colour = ScopeColours.TEXT_FAINT,
-                            },
+                            createFooter(),
                         ],
                     },
                 ],
@@ -124,7 +119,7 @@ public partial class AboutOverlay : OverlayContainer
                     },
                     new SpriteText
                     {
-                        Text = "OSCILLOSCOPE & FUNCTION GENERATOR SIMULATOR",
+                        Text = AboutStrings.Subtitle.ToUpper(),
                         Font = ScopeFont.Condensed(12, true),
                         Colour = ScopeColours.TEXT_FAINT,
                         Spacing = new Vector2(1, 0),
@@ -137,12 +132,35 @@ public partial class AboutOverlay : OverlayContainer
                 Origin = Anchor.TopRight,
                 Size = new Vector2(30),
                 Action = Hide,
-                TooltipText = "Close (Esc)",
+                TooltipText = AboutStrings.CloseTooltip,
             },
         ],
     };
 
-    private static Drawable createParagraph(string text) => new TextFlowContainer(t =>
+    private static Drawable createFooter() => new Container
+    {
+        RelativeSizeAxes = Axes.X,
+        AutoSizeAxes = Axes.Y,
+        Children =
+        [
+            new ExternalLink(repository_url, "1ukidev/scopelab", FontAwesome.Brands.Github)
+            {
+                Anchor = Anchor.CentreLeft,
+                Origin = Anchor.CentreLeft,
+                TooltipText = AboutStrings.RepositoryTooltip,
+            },
+            new SpriteText
+            {
+                Anchor = Anchor.CentreRight,
+                Origin = Anchor.CentreRight,
+                Text = AboutStrings.BuiltWith,
+                Font = ScopeFont.Condensed(12, true),
+                Colour = ScopeColours.TEXT_FAINT,
+            },
+        ],
+    };
+
+    private static Drawable createParagraph(LocalisableString text) => new TextFlowContainer(t =>
     {
         t.Font = ScopeFont.Regular(15);
         t.Colour = ScopeColours.TEXT_DIM;
@@ -172,10 +190,7 @@ public partial class AboutOverlay : OverlayContainer
                 AutoSizeAxes = Axes.Y,
                 Padding = new MarginPadding(14),
                 ParagraphSpacing = 0.4f,
-                Text = "Hover any control for a hint.\n"
-                       + "Drag or scroll knobs, hold Shift for fine tuning and double-click to reset.\n"
-                       + "Drag the markers on the screen edges, scroll over the screen to zoom in time.\n"
-                       + "AUTO SET finds a picture for you, DEFAULT restores the factory setup.",
+                Text = AboutStrings.Tips,
             },
         ],
     };

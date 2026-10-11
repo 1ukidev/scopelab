@@ -155,6 +155,9 @@ public abstract partial class EdgeMarker : CompositeDrawable, IHasTooltip
             tag.ScaleTo(1, 300, Easing.OutQuint);
     }
 
+    // The framework only delivers double-clicks to whoever handled the first click.
+    protected override bool OnClick(ClickEvent e) => true;
+
     protected override bool OnDoubleClick(DoubleClickEvent e)
     {
         ResetToDefault();

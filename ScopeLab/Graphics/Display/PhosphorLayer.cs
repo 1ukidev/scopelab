@@ -28,9 +28,14 @@ public partial class PhosphorLayer : Drawable, ITexturedShaderDrawable
     private const int beam_texture_size = 64;
 
     /// <summary>
-    /// Standard deviation of the core, relative to the half-size of the beam texture.
+    /// Half-size of a beam splat, in standard deviations of its core. The halo carries negligible energy beyond this.
     /// </summary>
-    private const float core_sigma = 0.1f;
+    private const float beam_extent = 6;
+
+    /// <summary>
+    /// The afterglow is deliberately soft, so it's accumulated at a reduced resolution.
+    /// </summary>
+    private const float afterglow_resolution = 0.5f;
 
     public IShader TextureShader { get; private set; } = null!;
 
@@ -101,8 +106,11 @@ public partial class PhosphorLayer : Drawable, ITexturedShaderDrawable
                 float dy = (y + 0.5f) / beam_texture_size * 2 - 1;
                 float r2 = dx * dx + dy * dy;
 
-                float value = MathF.Exp(-r2 / (2 * core_sigma * core_sigma)) + 0.12f * MathF.Exp(-r2 / (2 * 0.33f * 0.33f));
-                value *= Math.Clamp((1 - MathF.Sqrt(r2)) / 0.2f, 0, 1);
+                // Distance from the centre in units of the core's standard deviation.
+                float u2 = r2 * beam_extent * beam_extent;
+
+                float value = MathF.Exp(-u2 / 2) + 0.12f * MathF.Exp(-u2 / (2 * 3.3f * 3.3f));
+                value *= Math.Clamp((1 - MathF.Sqrt(r2)) / 0.15f, 0, 1);
 
                 byte b = (byte)Math.Clamp(MathF.Round(value * 255), 0, 255);
                 image[x, y] = new Rgba32(b, b, b, b);
@@ -254,7 +262,7 @@ public partial class PhosphorLayer : Drawable, ITexturedShaderDrawable
             float scale = Vector2Extensions.Transform(Vector2.UnitX, DrawInfo.Matrix).X - Vector2Extensions.Transform(Vector2.Zero, DrawInfo.Matrix).X;
             float sigma = beamSigma * scale;
             float spacing = sigma * 1.25f;
-            float halfSize = sigma / core_sigma;
+            float halfSize = sigma * beam_extent;
 
             // Integral of a gaussian cross-section; converts a linear energy density into per-splat brightness.
             float lineIntegral = MathF.Sqrt(MathF.Tau) * sigma;
@@ -326,7 +334,7 @@ public partial class PhosphorLayer : Drawable, ITexturedShaderDrawable
             double elapsed = Math.Clamp(nowSeconds - buffer.LastUpdate, 0, 1);
             buffer.LastUpdate = nowSeconds;
 
-            var size = new Vector2(MathF.Ceiling(screenSpaceRectangle.Width), MathF.Ceiling(screenSpaceRectangle.Height));
+            var size = new Vector2(MathF.Ceiling(screenSpaceRectangle.Width * afterglow_resolution), MathF.Ceiling(screenSpaceRectangle.Height * afterglow_resolution));
             bool requiresClear = buffer.Size != size || buffer.ClearVersion != clearVersion;
 
             buffer.Size = size;

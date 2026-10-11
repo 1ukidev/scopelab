@@ -37,6 +37,11 @@ public partial class Oscilloscope : Component
 
     private const int max_trigger_scan_steps = 4096;
 
+    /// <summary>
+    /// Sweeps captured per second. The display only ever shows the latest sweep of each frame, so updating faster would waste work.
+    /// </summary>
+    private const double max_acquisition_rate = 120;
+
     private const ulong sample_dither_seed = 0x5DEECE66D;
 
     public readonly SignalGenerator[] Generators = [new SignalGenerator(0), new SignalGenerator(1)];
@@ -82,6 +87,7 @@ public partial class Oscilloscope : Component
     private double now;
     private double earliestNextTrigger;
     private double lastTriggerTime;
+    private double lastAcquisitionTime = double.NegativeInfinity;
     private bool sweeping;
 
     public Oscilloscope()
@@ -203,6 +209,11 @@ public partial class Oscilloscope : Component
             state.Value = AcquisitionState.Stopped;
             return;
         }
+
+        if (now - lastAcquisitionTime < 1 / max_acquisition_rate)
+            return;
+
+        lastAcquisitionTime = now;
 
         if (IsRolling)
         {

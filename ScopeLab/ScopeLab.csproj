@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <!-- Browsers additionally require a build against the local osu!framework checkout (see Directory.Build.props). -->
+    <TargetFrameworks Condition="'$(OsuFrameworkAvailable)' == 'true'">net10.0;net10.0-browser</TargetFrameworks>
     <Nullable>enable</Nullable>
     <AssemblyName>ScopeLab.Core</AssemblyName>
     <RootNamespace>ScopeLab</RootNamespace>
@@ -8,7 +10,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ScopeLab.Resources\ScopeLab.Resources.csproj" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-browser'">
     <PackageReference Include="ppy.osu.Framework" Version="2026.1008.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browser'">
+    <ProjectReference Include="$(OsuFrameworkDir)osu.Framework\osu.Framework.csproj" />
   </ItemGroup>
 </Project>

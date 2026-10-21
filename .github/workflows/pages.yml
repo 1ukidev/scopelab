@@ -1,0 +1,63 @@
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+name: Deploy to GitHub Pages
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+  pages: write # to deploy to GitHub Pages
+  id-token: write # to verify the deployment originates from an appropriate source
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      # ScopeLab.Browser references a local checkout of osu-framework, which must be located alongside scopelab.
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: scopelab
+
+      - name: Checkout osu-framework
+        uses: actions/checkout@v6
+        with:
+          repository: osu-lazer-web/osu-framework
+          ref: wasm-port
+          path: osu-framework
+
+      - name: Install .NET 10.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install wasm-tools workload
+        working-directory: scopelab
+        run: dotnet workload install wasm-tools
+
+      # GitHub Pages doesn't serve pre-compressed files, so compression is disabled to avoid deploying them.
+      - name: Publish
+        working-directory: scopelab
+        run: dotnet publish ScopeLab.Browser -c Release -o ${{ github.workspace }}/publish -p:CompressionEnabled=false
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: publish/wwwroot
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

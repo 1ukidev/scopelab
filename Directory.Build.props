@@ -7,4 +7,11 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+  <PropertyGroup Label="Browser">
+    <!-- osu!framework's browser support isn't published yet, so browser builds require a local checkout of it (see ScopeLab.Browser).
+         The location can be overridden with the OsuFrameworkPath property or environment variable, relative to this directory. -->
+    <OsuFrameworkPath Condition="'$(OsuFrameworkPath)' == ''">../osu-framework</OsuFrameworkPath>
+    <OsuFrameworkDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '$(OsuFrameworkPath)'))</OsuFrameworkDir>
+    <OsuFrameworkAvailable Condition="Exists('$(OsuFrameworkDir)osu.Framework.Browser/osu.Framework.Browser.csproj')">true</OsuFrameworkAvailable>
+  </PropertyGroup>
 </Project>

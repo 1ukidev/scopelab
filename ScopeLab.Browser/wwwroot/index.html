@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>ScopeLab</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <canvas id="canvas" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
+    <div id="overlay">
+        <img id="logo" src="favicon.svg" alt="" />
+        <div id="status"></div>
+        <button id="start" hidden></button>
+        <div id="progress" hidden><div id="progress-bar"></div></div>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

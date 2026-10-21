@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <PropertyGroup Label="Project">
+    <TargetFramework>net10.0-browser</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>ScopeLab</AssemblyName>
+    <Nullable>enable</Nullable>
+    <Version>0.0.0</Version>
+    <FileVersion>0.0.0</FileVersion>
+    <!-- ScopeState is serialised via reflection, which is otherwise disabled in trimmed builds. -->
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+  <Import Project="$(OsuFrameworkDir)osu.Framework.Browser.props" Condition="'$(OsuFrameworkAvailable)' == 'true'" />
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\ScopeLab\ScopeLab.csproj" />
+    <ProjectReference Include="$(OsuFrameworkDir)osu.Framework.Browser\osu.Framework.Browser.csproj" Condition="'$(OsuFrameworkAvailable)' == 'true'" />
+  </ItemGroup>
+  <ItemGroup Label="Resources">
+    <Content Include="..\Branding\scopelab-icon.svg" Link="wwwroot\favicon.svg" />
+  </ItemGroup>
+  <UsingTask TaskName="GetTotalFileSize" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <TotalSize ParameterType="System.Int64" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">TotalSize = Files.Sum(f => new FileInfo(f.ItemSpec).Length);</Code>
+    </Task>
+  </UsingTask>
+  <!-- The page states how much will be downloaded before starting (see wwwroot/main.js).
+       Pre-compressed variants are excluded, as whether they're used depends on the server, so this is an upper bound. -->
+  <Target Name="WriteDownloadSize" AfterTargets="Publish">
+    <ItemGroup>
+      <_DownloadedFile Include="$(PublishDir)wwwroot\_framework\**\*" Exclude="$(PublishDir)wwwroot\_framework\**\*.br;$(PublishDir)wwwroot\_framework\**\*.gz" />
+    </ItemGroup>
+    <GetTotalFileSize Files="@(_DownloadedFile)">
+      <Output TaskParameter="TotalSize" PropertyName="_DownloadSize" />
+    </GetTotalFileSize>
+    <WriteLinesToFile File="$(PublishDir)wwwroot\download-size.json" Lines="{ &quot;bytes&quot;: $(_DownloadSize) }" Overwrite="true" />
+  </Target>
+  <Target Name="EnsureOsuFrameworkAvailable" BeforeTargets="CollectPackageReferences;BeforeBuild" Condition="'$(OsuFrameworkAvailable)' != 'true'">
+    <Error Text="A local checkout of osu-framework with browser support was not found at $(OsuFrameworkDir). Set the OsuFrameworkPath property or environment variable to its location." />
+  </Target>
+</Project>
